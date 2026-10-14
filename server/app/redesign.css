@@ -1356,3 +1356,66 @@ html[data-theme="dark"] #app.v4 .pp-actions #pp-gift{color:#fff!important}
 #app.v4 .store-hero .store-anchor span{color:rgba(255,255,255,.72)!important}
 /* Deck side panel: «О себе» at the prototype line height */
 #app.v4 .v4 .disc .bio{line-height:1.55}
+
+/* >>> v4 stage 4 css (tools/v4/stage4.css) >>> */
+/* ============================================================================
+ * Stage 4 — the prototype markup on every screen (2026-10-14). Built by tools/build_app.py from tools/v4/stage4.css.
+ * ========================================================================== */
+/* Phone topbar (prototype .topbar: tbRoot / tbBack) */
+#app.v4 .v4 .topbar.v4tb{display:flex!important;flex-direction:row!important;align-items:center;gap:10px;min-height:58px;margin:0;padding:calc(10px + var(--safe-t)) 0 8px!important;background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;position:relative;z-index:2}
+#app.v4 .v4 .topbar.v4tb h1{position:static!important;transform:none!important;flex:1;min-width:0;margin:0;font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.2;text-align:center!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+#app.v4 .v4 .topbar.v4tb.left h1{text-align:left!important}
+#app.v4 .v4 .topbar.v4tb .sp{width:40px;flex:none}
+#app.v4 .v4 .topbar.v4tb .vibes{flex:none}
+@media (min-width:980px){#app.v4 .v4 .topbar.v4tb{display:none!important}}
+/* Phone screens without the bottom tabs (prototype nav: null) */
+@media (max-width:979px){
+  body.v4-no-nav #app.v4 #vc-bottom-nav,body.v4-no-nav #app.v4 .bottom-nav{display:none!important}
+  body.v4-no-nav #app.v4 .v4-page{padding-bottom:calc(24px + var(--safe-b))}
+}
+/* Sheets (prototype openSheet) */
+.v4-sheet-host .backdrop{z-index:1500}
+#app.v4 .v4 .v4-link,.v4-sheet-host .v4-link{background:none;border:0;padding:0;font:inherit;color:var(--coral);font-weight:700;text-decoration:underline;cursor:pointer}
+/* Likes */
+#app.v4 .v4-likes .pcard{text-decoration:none;color:#fff}
+/* Profile (prototype V.profile) */
+@media (max-width:979px){#app.v4 .v4-page.pp-v4{padding:0 0 calc(104px + var(--safe-b))}}
+#app.v4 .v4 .gal .glike{position:absolute;right:16px;bottom:34px;z-index:3;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:999px;background:rgba(0,0,0,.42);color:#fff;font:700 13px/1 inherit;font-family:inherit;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);cursor:pointer}
+#app.v4 .v4 .gal .glike .i{width:16px;height:16px}
+#app.v4 .v4 .gal .glike.on .i{color:var(--coral)}
+#app.v4 .v4 .gal .nm em{font-style:normal}
+#app.v4 .v4 .thumbs .lk{cursor:pointer}
+#app.v4 .v4 .thumbs .lk.on .i{color:var(--coral)}
+#app.v4 .v4 .thumbs .lk i{font-style:normal}
+#app.v4 .v4 .pp-dname{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.15}
+#app.v4 .v4 .pp-dmeta{display:flex;gap:6px;align-items:center;margin-top:4px}
+#app.v4 .v4 .pp-bio-v4{white-space:pre-line}
+#app.v4 .v4 .v4-trust>*{margin:0!important}
+/* Notifications page: the centre without its drawer chrome */
+#app.v4 .v4-ntf .vcn-page-wrap,#app.v4 .v4-ntf .vcn-drawer{position:static!important;inset:auto!important;width:auto!important;max-width:none!important;height:auto!important;max-height:none!important;margin:0!important;padding:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;transform:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#app.v4 .v4-ntf .vcn-drawer-head,#app.v4 .v4-ntf .vcn-drawer-foot{display:none!important}
+#app.v4 .v4-ntf .vcn-chips{display:flex!important;flex-wrap:nowrap;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px!important;padding:2px 16px 4px!important;background:none!important;border:0!important;box-shadow:none!important}
+#app.v4 .v4-ntf .vcn-chips::-webkit-scrollbar{display:none}
+#app.v4 .v4-ntf .vcn-chip.tab{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;margin:0;border:0!important;border-radius:999px!important;background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)!important;color:var(--muted)!important;font:600 14px/1 inherit;font-family:inherit}
+#app.v4 .v4-ntf .vcn-chip.tab.on{background:var(--solid)!important;color:var(--solid-ink)!important;box-shadow:none!important}
+#app.v4 .v4-ntf .vcn-chip.tab b{min-width:0;height:auto;padding:0;background:none!important;color:inherit!important;font-size:12px;font-weight:600;opacity:.7;box-shadow:none!important}
+#app.v4 .v4-ntf .vcn-scroll{overflow:visible!important;max-height:none!important;padding:0!important;margin:0!important;background:none!important}
+#app.v4 .v4-ntf .vcn-scroll>.spin{margin:40px auto}
+#app.v4 .v4-ntf .nrow{cursor:pointer}
+#app.v4 .v4-ntf .vcn-empty{display:block;text-align:center;padding:36px 20px;margin:16px 0 0;background:none!important;border:0!important;box-shadow:none!important;color:var(--muted)}
+#app.v4 .v4-ntf .vcn-empty-icon{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;background:var(--chip)!important;display:grid;place-items:center;color:var(--ink);box-shadow:none!important}
+#app.v4 .v4-ntf .vcn-empty-icon svg{width:28px;height:28px}
+#app.v4 .v4-ntf .vcn-empty strong{display:block;color:var(--ink);font-size:17px;font-weight:800;margin-bottom:4px}
+#app.v4 .v4-ntf .vcn-empty p{margin:0;font-size:14px}
+@media (min-width:980px){#app.v4 .v4-ntf .vcn-chips{margin:0!important;padding:2px 0 4px!important}}
+/* Chat list: prototype header, «Сейчас в сети» under the list */
+@media (max-width:979px){
+  #app.v4 .v4 .chats .clist .hd{padding:calc(10px + var(--safe-t)) 16px 4px}
+  #app.v4 .v4 .chats .clist .hd>.row-between{min-height:40px}
+  #app.v4 .v4 .chats .clist .hd .page-h{font-size:19px;letter-spacing:-.02em}
+}
+#app.v4 .v4 .v4-online-h{margin:22px 0 10px}
+#app.v4 .v4 .v4-online-h a{font-size:13px;font-weight:600;color:var(--coral);text-decoration:none}
+#app.v4 .v4 .chat-match-scroller .chat-match-avatar{position:relative;overflow:visible}
+#app.v4 .v4 .chat-match-scroller .chat-match-avatar .on{position:absolute;right:0;bottom:0;width:14px;height:14px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2.5px var(--bg)}
+/* <<< v4 stage 4 css <<< */
