@@ -714,7 +714,9 @@ html[data-theme="dark"] #app.v4>.sidebar [aria-checked="true"] .vc-rail-theme-tr
  * ============================================================================ */
 @media (min-width:980px){.v4 div.vis-d,.v4 section.vis-d,.v4 p.vis-d,.v4 aside.vis-d{display:block!important}}
 .v4 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-#app.v4 .v4 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+#app.v4 .v4 button{font:inherit;cursor:pointer}
+/* Element-level reset: must not outrank the component rules (.tab.on, .btn-primary, .chip …) that colour buttons. */
+:where(#app.v4 .v4) button{color:inherit;border:0;background:none}
 #app.v4 .v4 .btn .v4-ic{width:20px;height:20px}
 #app.v4 .v4 .ibtn .v4-ic{width:22px;height:22px}
 #app.v4 .v4 .row .chev{margin-left:auto}
@@ -1297,4 +1299,40 @@ html[data-theme="dark"] #app.v4 .pp-actions #pp-gift{color:#fff!important}
   #app.v4 .v4 .dtools .online-filter{font-size:0;gap:0;padding:0 8px;width:50px;justify-content:center}
   #app.v4 .v4 .dtools .vibes{height:36px;padding:0 10px}
   #app.v4 .v4 .dtools .vibes b{font-size:14px}
+}
+
+/* ============================================================================
+ * Stage 3 — finishing pass against the prototype (2026-10-14)
+ * Found on the stand with real data: cascade leaks from app.css, the deck photo clamp, chat rows,
+ * the sidebar wallet, settings switches, mobile page titles and paddings.
+ * ========================================================================== */
+/* Deck card: the photo fills the card (app.css clamps .profile-photo on the discover route); like the prototype the card
+   shows name, city and interests — the bio is in the side panel and the full profile. */
+#app.v4 .v4 .dcard .profile-photo{max-height:none;aspect-ratio:auto;height:auto}
+#app.v4 .v4 .dcard .dinfo .bio{display:none}
+/* «Для вас» / «В сети» tabs replace the unlabeled switch; the checkbox stays as the single source of the filter state. */
+#app.v4 .v4 .dtools .discover-filter-dock{display:none}
+#app.v4 .v4 .v4-disc-tabs{margin:0;padding:2px 0 12px}
+#app.v4 .v4 .v4-disc-tabs .tab{gap:6px}
+#app.v4 .v4 .v4-disc-tabs .tab .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+/* Chat rows (prototype .crow): round avatars, no presence text, time top-right */
+#app.v4 .v4 .crow{border-radius:0}
+#app.v4 .v4 .crow.has-unread{background:var(--surface)}
+#app.v4 .v4 .crow.on{background:var(--navy-soft)}
+#app.v4 .v4 .crow .av img{position:absolute;inset:0;width:100%;height:100%}
+#app.v4 .v4 .crow .cinfo{display:block;border:0;padding:0}
+#app.v4 .v4 .crow .chat-row-presence{display:none}
+#app.v4 .v4 .crow .cmeta{align-self:stretch;justify-content:flex-start;padding-top:3px}
+#app.v4 .v4 .cthread .chat-empty{border:0;border-radius:0;background:none}
+/* Sidebar wallet: both buttons share the row */
+#app.v4>.sidebar .wallet .row2 .btn{width:auto;flex:1 1 0;min-width:0;padding:0 10px}
+/* Settings switches: app.css also shifts the knob by translateX(18px) */
+#app.v4 .set-section input[type=checkbox]:checked::after{transform:none}
+#app.v4 .vc-context-cta::before,#app.v4 .vc-context-cta::after{display:none}
+@media (max-width:979px){
+  /* v4 page titles: app.css hides every .topbar in the headerless shell */
+  #app.v4 .v4 .topbar.vis-m{display:flex;align-items:center;gap:10px;min-height:44px;margin:0 0 12px;padding:0}
+  #app.v4 .v4 .topbar.vis-m h1{flex:1;min-width:0;margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Legacy views: the prototype phone paddings (16px sides) */
+  #app.v4>.center>.main-body{padding:calc(14px + var(--safe-t)) 16px 32px!important}
 }

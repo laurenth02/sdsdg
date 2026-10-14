@@ -3,7 +3,7 @@
  * - app assets: stale-while-revalidate with versioned request support
  * - API writes: network-only with a consistent offline JSON response
  */
-const VERSION = 'v1.10.1-redesign-v4';
+const VERSION = 'v1.11.0-redesign-v4-finish';
 const CACHE_PREFIX = 'vc-pwa-';
 const CACHE_SHELL = `${CACHE_PREFIX}shell-${VERSION}`;
 const CACHE_RUNTIME = `${CACHE_PREFIX}runtime-${VERSION}`;
@@ -238,13 +238,16 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   if (event.action === 'dismiss') return;
 
-  let targetUrl = '/app/';
+  // Root mode (scope "/"): the shell lives at "/" and "/app/" only redirects there, so open "/" directly.
+  const scopePath = new URL(self.registration.scope).pathname;
+  let targetUrl = new URL(scopePath, self.location.origin).href;
   try {
     const requested = new URL(
-      (event.notification.data && event.notification.data.url) || '/app/',
+      (event.notification.data && event.notification.data.url) || scopePath,
       self.location.origin
     );
-    if (requested.origin === self.location.origin && requested.pathname.startsWith('/app/')) {
+    if (requested.origin === self.location.origin && (requested.pathname.startsWith('/app/') || requested.pathname === '/')) {
+      if (scopePath === '/' && (requested.pathname === '/app/' || requested.pathname === '/app/index.php')) requested.pathname = '/';
       targetUrl = requested.href;
     }
   } catch (error) {}

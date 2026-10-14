@@ -371,7 +371,7 @@ function resumePendingPurchase(options){
 }
 function t(key, fallback, num){ var s = window.t ? window.t(key, null, num) : key; var known=window.I18N&&typeof window.I18N.has==='function'&&window.I18N.has(key); if (s === key && fallback != null && !known) return fallback; return s; }
 function legalUrl(doc){
-  var urls={tos:'/terms/',privacy:'/privacy/','eu-terms':'/terms-for-eu-residents/','withdrawal-eu':'/right-of-withdrawal-for-eu-residents/','privacy-gdpr':'/privacy-gdpr/'};
+  var urls={tos:'/terms/',privacy:'/privacy/','community-guidelines':'/community-guidelines/','eu-terms':'/terms-for-eu-residents/','withdrawal-eu':'/right-of-withdrawal-for-eu-residents/','privacy-gdpr':'/privacy-gdpr/'};
   if(urls[doc])return urls[doc];
   var lang=String(state.lang||'ru').slice(0,2),base='/operator/'+doc;
   return base+(lang==='uk'?'':(lang==='ru'?'.ru':'.en'))+'.html';
@@ -3072,7 +3072,7 @@ function vcIcebreakerHtml(){
     '</section>';
 }
 function vcSafetyNoteHtml(){
-  return '<a class="vc-safety-note" href="/operator/community-guidelines.html" target="_blank" rel="noopener">'+vcIcon('shield')+'<span><strong>'+h(t('safety_comfort','Ваш комфорт — в приоритете'))+'</strong><small>'+h(t('safety_pace','Знакомьтесь в своём темпе'))+'</small></span>'+vcIcon('chevron-right')+'</a>';
+  return '<a class="vc-safety-note" href="/community-guidelines/" target="_blank" rel="noopener">'+vcIcon('shield')+'<span><strong>'+h(t('safety_comfort','Ваш комфорт — в приоритете'))+'</strong><small>'+h(t('safety_pace','Знакомьтесь в своём темпе'))+'</small></span>'+vcIcon('chevron-right')+'</a>';
 }
 /* Downscaled copies of virtual-profile photos: photo/up/vpt/<width>/<dir>/<file> (made by _dev/design_20261006/make_photo_thumbs.py).
    A missing copy falls back to the original through the capture-phase error handler below. */
@@ -3162,7 +3162,7 @@ function viewDiscover(){
   var filterDock=discoverFilterDockHtml();
   var filterBtn='<button type="button" class="ibtn" data-v4-filters aria-label="'+h(t('v4_filters','Фильтры'))+'" title="'+h(t('v4_filters','Фильтры'))+'">'+v4Icon('filter')+'</button>';
   var counter=(cards.length&&state.deckIdx<cards.length)?(state.deckIdx+1)+' / '+cards.length:'';
-  function dhead(filterDock){return '<div class="dhead row-between"><div class="dtitle"><a class="logo vis-m" href="#/" aria-label="otkrovenno.online">otkrovenno<em>.online</em></a><div class="vis-d"><h1 class="page-h" id="page-title" tabindex="-1">'+h(t('nav_discover','Поиск'))+'</h1><p class="page-sub vc-deck-counter" id="profile-counter">'+h(counter)+'</p></div></div><div class="dtools">'+v4BalancePill()+filterDock+filterBtn+'</div></div>';}
+  function dhead(filterDock){var onl=!!(state.discoverFilter&&state.discoverFilter.online);var tabs='<div class="tabs v4-disc-tabs" role="group" aria-label="'+h(t('v4_disc_show','Кого показывать'))+'"><button type="button" class="tab'+(onl?'':' on')+'" data-disc-online="0" aria-pressed="'+(onl?'false':'true')+'">'+h(t('v4_for_you','Для вас'))+'</button><button type="button" class="tab'+(onl?' on':'')+'" data-disc-online="1" aria-pressed="'+(onl?'true':'false')+'"><span class="dot"></span>'+h(t('v4_online','В сети'))+'</button></div>';return '<div class="dhead row-between"><div class="dtitle"><a class="logo vis-m" href="#/" aria-label="otkrovenno.online">otkrovenno<em>.online</em></a><div class="vis-d"><h1 class="page-h" id="page-title" tabindex="-1">'+h(t('nav_discover','Поиск'))+'</h1><p class="page-sub vc-deck-counter" id="profile-counter">'+h(counter)+'</p></div></div><div class="dtools">'+v4BalancePill()+filterDock+filterBtn+'</div></div>'+tabs;}
   if (!cards.length || state.deckIdx >= cards.length){
     var onlineActive=!!(state.discoverFilter&&state.discoverFilter.online),onlineLoading=onlineActive&&state.onlineDeckLoading,onlineError=onlineActive&&state.onlineDeckError;
     var onlineZero=onlineActive&&!onlineLoading&&!onlineError&&Array.isArray(state.onlineDeck)&&state.onlineDeck.length===0;
@@ -3235,6 +3235,8 @@ function wireDiscoverFilterDock(root){
   $$('.vc-discover-filter',scope).forEach(function(btn){btn.addEventListener('click',openDiscoverFilters);});
   var onlineToggle=scope.querySelector&&scope.querySelector('#vc-online-filter');
   if(onlineToggle&&!onlineToggle.dataset.bound){onlineToggle.dataset.bound='1';onlineToggle.addEventListener('change',function(){setDiscoverOnlineEnabled(onlineToggle.checked);});}
+  /* «Для вас» / «В сети» tabs drive the same checkbox */
+  $$('[data-disc-online]',scope).forEach(function(tab){if(tab.dataset.bound)return;tab.dataset.bound='1';tab.addEventListener('click',function(){var want=tab.dataset.discOnline==='1';$$('[data-disc-online]',scope).forEach(function(x){var on=(x.dataset.discOnline==='1')===want;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});var cb=scope.querySelector&&scope.querySelector('#vc-online-filter');if(cb&&cb.checked===want)return;if(cb)cb.checked=want;setDiscoverOnlineEnabled(want);});});
 }
 function vcCoachPending(){return !state.coachDone&&!(state.me&&parseInt(state.me.seen_hint,10)===1);}
 function vcCoachHtml(){

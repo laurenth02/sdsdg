@@ -36,7 +36,7 @@
       var br = document.getElementById('vc-boot-reload');
       if (br) br.addEventListener('click', function () { location.reload(); });
       var bh = document.getElementById('vc-boot-help');
-      if (bh) bh.addEventListener('click', function () { try { location.href = '/app/#/settings'; } catch (e) {} });
+      if (bh) bh.addEventListener('click', function () { try { location.href = (location.pathname === '/' ? '/' : '/app/') + '#/settings'; } catch (e) {} });
     }
   }, 8000);
 
@@ -92,10 +92,13 @@
       if (ev.data && ev.data.type === 'navigate' && ev.data.url) {
         try {
           var target = new URL(ev.data.url, window.location.origin);
-          if (target.origin === window.location.origin && target.pathname.indexOf('/app/') === 0) {
-            // Root-mode shell: switch the hash in place instead of reloading through the /app/ redirect.
-            if (window.location.pathname === '/' && target.pathname === '/app/' && !target.search && target.hash) window.location.hash = target.hash;
-            else window.location.href = target.href;
+          var isShell = target.pathname === '/' || target.pathname === '/app/' || target.pathname === '/app/index.php';
+          if (target.origin === window.location.origin && (target.pathname.indexOf('/app/') === 0 || target.pathname === '/')) {
+            // Root-mode shell: stay on "/" — switch the hash in place, or open "/" with the push parameters (no /app/ redirect).
+            if (window.location.pathname === '/' && isShell) {
+              if (!target.search && target.hash) window.location.hash = target.hash;
+              else window.location.href = '/' + target.search + target.hash;
+            } else window.location.href = target.href;
           }
         } catch (e) {}
       }

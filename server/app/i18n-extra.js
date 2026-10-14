@@ -5057,9 +5057,9 @@ window.VC_I18N_EXTRA = {
 
 /* Redesign 2026-10-14 (site-prototype-20261014): shell navigation and the likes screen. */
 (function(E){
-  var D={"ru":{"v4_nav_likes":"Симпатии","v4_nav_store":"Пакеты и баланс","v4_nav_support":"Поддержка","v4_packs":"Пакеты","v4_likes_sub":"Кому понравилась ваша анкета","v4_likes_empty_title":"Пока нет симпатий","v4_likes_empty_text":"Лайкайте анкеты в поиске — взаимные симпатии появятся здесь","v4_go_search":"В поиск","v4_online":"В сети"},
-  "uk":{"v4_nav_likes":"Симпатії","v4_nav_store":"Пакети та баланс","v4_nav_support":"Підтримка","v4_packs":"Пакети","v4_likes_sub":"Кому сподобалася ваша анкета","v4_likes_empty_title":"Поки немає симпатій","v4_likes_empty_text":"Лайкайте анкети в пошуку — взаємні симпатії з’являться тут","v4_go_search":"До пошуку","v4_online":"Онлайн"},
-  "en":{"v4_nav_likes":"Likes","v4_nav_store":"Packs & balance","v4_nav_support":"Support","v4_packs":"Packs","v4_likes_sub":"People who liked your profile","v4_likes_empty_title":"No likes yet","v4_likes_empty_text":"Like profiles in Discover — mutual likes will show up here","v4_go_search":"Go to Discover","v4_online":"Online"}};
+  var D={"ru":{"v4_nav_likes":"Симпатии","v4_nav_store":"Пакеты и баланс","v4_nav_support":"Поддержка","v4_packs":"Пакеты","v4_likes_sub":"Кому понравилась ваша анкета","v4_likes_empty_title":"Пока нет симпатий","v4_likes_empty_text":"Лайкайте анкеты в поиске — взаимные симпатии появятся здесь","v4_go_search":"В поиск","v4_online":"В сети","v4_for_you":"Для вас","v4_disc_show":"Кого показывать"},
+  "uk":{"v4_nav_likes":"Симпатії","v4_nav_store":"Пакети та баланс","v4_nav_support":"Підтримка","v4_packs":"Пакети","v4_likes_sub":"Кому сподобалася ваша анкета","v4_likes_empty_title":"Поки немає симпатій","v4_likes_empty_text":"Лайкайте анкети в пошуку — взаємні симпатії з’являться тут","v4_go_search":"До пошуку","v4_online":"Онлайн","v4_for_you":"Для вас","v4_disc_show":"Кого показувати"},
+  "en":{"v4_nav_likes":"Likes","v4_nav_store":"Packs & balance","v4_nav_support":"Support","v4_packs":"Packs","v4_likes_sub":"People who liked your profile","v4_likes_empty_title":"No likes yet","v4_likes_empty_text":"Like profiles in Discover — mutual likes will show up here","v4_go_search":"Go to Discover","v4_online":"Online","v4_for_you":"For you","v4_disc_show":"Who to show"}};
   Object.keys(D).forEach(function(lang){E[lang]=Object.assign(E[lang]||{},D[lang]);});
 })(window.VC_I18N_EXTRA);
 
