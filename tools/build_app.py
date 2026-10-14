@@ -10,7 +10,8 @@ PROTO = '/tmp/gwegwe/prototype/app.js'
 BEGIN, END = '/* >>> v4 stage 4 screens (tools/v4/screens.js) >>> */', '/* <<< v4 stage 4 screens <<< */'
 
 src = open(APP, encoding='utf-8').read()
-block = open(os.path.join(ROOT, 'tools', 'v4', 'screens.js'), encoding='utf-8').read().rstrip('\n')
+import glob
+block = '\n\n'.join(open(f, encoding='utf-8').read().rstrip('\n') for f in sorted(glob.glob(os.path.join(ROOT, 'tools', 'v4', 'screens*.js'))))
 
 # 1) screens block
 if BEGIN in src:
@@ -84,6 +85,22 @@ patch("  if(chatSearch)chatSearch.addEventListener('input',applyChatFilter);\n",
       "  $$('[data-v4-online-all]',body).forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();navigate('/');setTimeout(function(){var cb=document.getElementById('vc-online-filter');if(cb&&!cb.checked){cb.checked=true;setDiscoverOnlineEnabled(true);}},350);});});\n")
 patch("var tm=h(fmtTime(c.last_at||c.last_ts||c.ts)),unreadCount=parseInt(c.unread,10)||0;", "var tm=h(v4ChatTime(c.last_at||c.last_ts||c.ts)),unreadCount=parseInt(c.unread,10)||0;")
 patch("'<div class=\"cinfo\"><div class=\"cnm\"><b>'+nm+'</b>", "'<div class=\"cinfo\"><div class=\"cnm\"><b>'+nm+(parseInt(c.age,10)?', '+parseInt(c.age,10):'')+'</b>")
+
+# 7) batch 2: own profile + editor markup (legacy ids kept), store delegation, settings/support/purchases routes
+if 'v4MeHtml({' not in src:
+    a = src.index("  body.innerHTML = '<div class=\"profile-view own-profile-view vc-pf\">' +")
+    b = src.index("  var editBtn = document.getElementById('vc-prof-edit'); if (editBtn) editBtn.addEventListener('click', toggleProfileEdit);", a)
+    src = src[:a] + "  body.innerHTML = v4MeHtml({p:p,rawName:rawName,age:age,city:city,bio:bio,photo:photo,zodiac:zodiac,status:status,complete:complete,missing:missing,nextStep:nextStep,accountEmail:accountEmail,balance:balance,ints:ints,photos:photos,managedGallery:managedGallery});\n" + src[b:]
+patch("navigate('/settings');});\n}\nfunction wireProfilePhotos(){", "navigate('/settings');});\n  v4WireMe(body);\n}\nfunction wireProfilePhotos(){")
+if 'v4EditHtml({' not in src:
+    a = src.index("  body.innerHTML = '<div class=\"profile-edit\">' +")
+    b = src.index("  var peRoot=document.getElementById('vc-main-body').querySelector('.profile-edit')", a)
+    src = src[:a] + "  body.innerHTML = v4EditHtml({p:p,editInts:editInts,zodiacVal:zodiacVal});\n  v4WireEdit(body);\n" + src[b:]
+patch("  if (route === '/profile'){ viewProfile();v4AfterRender(v4ProfileExtras);return; }", "  if (route === '/profile'){ state.profileEdit=false;viewProfile();return; }")
+patch("  if (route === '/settings'){ viewSettings();v4AfterRender(v4SettingsNav);return; }", "  if (route === '/settings' || route.indexOf('/settings/')===0){ v4ViewSettings(route.split('/')[2]||'');return; }")
+patch("  if (route === '/support') return viewSupport();", "  if (route === '/support' || route.indexOf('/support/')===0) return v4ViewSupport(route.split('/')[2]||'');")
+patch("  if (route === '/store') return viewStore();", "  if (route === '/purchases') return v4ViewPurchases();\n  if (route === '/store') return viewStore();")
+patch("function viewStore(){\n  var body = document.getElementById('vc-main-body');\n  if (!body) return;\n  if(state.storeVisitKey){", "function viewStore(){return v4ViewStore();}\nfunction viewStoreLegacy(){\n  var body = document.getElementById('vc-main-body');\n  if (!body) return;\n  if(state.storeVisitKey){")
 
 open(APP, 'w', encoding='utf-8', newline='\n').write(src)
 print('app.js built:', len(src), 'chars')
