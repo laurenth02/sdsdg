@@ -5291,7 +5291,7 @@ function viewSettings(){
     setBusy(passBtn,true);authApi('change_password', {old:values.old||'',new:values.newpass}).then(function(r){setBusy(passBtn,false);if (r && r.ok) vcNotice(t('password_changed','Пароль изменён'),t('password_changed_copy','Используйте новый пароль при следующем входе.'),'success'); else vcNotice(t('password_not_changed','Не удалось изменить пароль'),localizedErrorText(r&&r.err),'error');}).catch(function(){setBusy(passBtn,false);toast(t('network_error','Ошибка сети'),'error');});
   });
   var secureBtn = document.getElementById('vc-set-secure');
-  if(secureBtn)secureBtn.addEventListener('click',async function(){setBusy(secureBtn,true);await secureCurrentAccount({source:'settings'});if(state.route==='/settings')viewSettings();});
+  if(secureBtn)secureBtn.addEventListener('click',async function(){setBusy(secureBtn,true);await secureCurrentAccount({source:'settings'});if(v4OnSettings())v4SettingsRefresh();});
   var pushBtn = document.getElementById('vc-set-push');
   if (pushBtn) pushBtn.addEventListener('click', function(){
     if(state.pushMutationBusy)return;state.pushMutationBusy=true;setBusy(pushBtn,true);
@@ -5529,7 +5529,7 @@ function enablePush(trigger){
     return navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(r.public_key)});});
   }).then(function(sub){if(!sub)return false;subscription=sub;return persistPushSubscription(sub);}).then(function(rr){
      if(rr===false)return false;if(!rr||!rr.ok)throw new Error((rr&&rr.err)||'push_subscribe_failed');
-    state.pushSub=subscription;funnelTrack('push_subscribed',{trigger:trigger},'subscribed');toast(t('set_push_enabled','Пуш-уведомления включены'),'success');if(state.route==='/settings')viewSettings();return true;
+    state.pushSub=subscription;funnelTrack('push_subscribed',{trigger:trigger},'subscribed');toast(t('set_push_enabled','Пуш-уведомления включены'),'success');if(v4OnSettings())v4SettingsRefresh();return true;
    }).catch(function(error){toast(localizedErrorText(error&&error.message,t('network_error','Ошибка сети')),'error');return false;});
 }
 function persistPushSubscription(sub){
@@ -5545,15 +5545,15 @@ function wireServiceWorkerMessages(){
     if(data.type!=='pushsubscriptionchange')return;
     if(data.subscription){
       state.pushSub=data.subscription;state.pushHydrated=true;
-      persistPushSubscription(data.subscription).then(function(r){if(r&&r.ok&&state.route==='/settings')viewSettings();}).catch(function(){});
-    }else if(data.error){state.pushSub=null;state.pushHydrated=true;if(state.route==='/settings')viewSettings();}
+      persistPushSubscription(data.subscription).then(function(r){if(r&&r.ok&&v4OnSettings())v4SettingsRefresh();}).catch(function(){});
+    }else if(data.error){state.pushSub=null;state.pushHydrated=true;if(v4OnSettings())v4SettingsRefresh();}
   });
 }
 function hydratePushSubscription(){
   if(!state.pushSupported||state.pushHydrated||!navigator.serviceWorker)return Promise.resolve(null);
   return navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription();}).then(function(sub){
     state.pushSub=sub||null;state.pushHydrated=true;if(sub&&state.uid)persistPushSubscription(sub).catch(function(){});
-    if(state.route==='/settings')viewSettings();
+    if(v4OnSettings())v4SettingsRefresh();
     return sub;
   }).catch(function(){state.pushHydrated=true;return null;});
 }
@@ -5562,7 +5562,7 @@ function disablePush(){
   var ep = state.pushSub.endpoint;
   var sub=state.pushSub;return authApi('push_unsubscribe', {endpoint: ep}).then(function(r){
      if(!r||!r.ok)throw new Error((r&&r.err)||'push_unsubscribe_failed');
-    return sub.unsubscribe().catch(function(){return false;}).then(function(){state.pushSub=null;toast(t('set_push_disabled','Пуш-уведомления выключены'),'success');if(state.route==='/settings')viewSettings();return true;});
+    return sub.unsubscribe().catch(function(){return false;}).then(function(){state.pushSub=null;toast(t('set_push_disabled','Пуш-уведомления выключены'),'success');if(v4OnSettings())v4SettingsRefresh();return true;});
    }).catch(function(error){toast(localizedErrorText(error&&error.message,t('network_error','Ошибка сети')),'error');return false;});
 }
 function urlBase64ToUint8Array(base64String){
@@ -6005,6 +6005,8 @@ function v4ViewPurchases(){
 
 /* ---------- Настройки (prototype V.settings): the legacy sections, one section per page ---------- */
 var V4_SETS=[['account','lock','v4_set_account','Вход и защита','v4_set_account_sub','Email, пароль, выход'],['notifications','bell','notifications','Уведомления','v4_set_ntf_sub','Push, события, звуки, тихие часы'],['appearance','sun','v4_set_look','Оформление и язык','v4_set_look_sub','Тема и язык интерфейса'],['privacy','shield','v4_set_privacy','Приватность','v4_set_privacy_sub','Заблокированные, правила, условия'],['app','download','v4_set_app','Приложение','v4_set_app_sub','Установить на главный экран'],['danger','trash','v4_set_danger','Удаление аккаунта','v4_set_danger_sub','Деактивация с возвратом 30 дней']];
+function v4OnSettings(){var r=String(state.route||'');return r==='/settings'||r.indexOf('/settings/')===0;}
+function v4SettingsRefresh(){if(v4OnSettings())v4ViewSettings(String(state.route).split('/')[2]||'');}
 function v4ViewSettings(sub){
   viewSettings();
   var body=document.getElementById('vc-main-body'),sv=body&&body.querySelector('.settings-view');if(!sv)return;

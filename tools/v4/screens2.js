@@ -160,6 +160,8 @@ function v4ViewPurchases(){
 
 /* ---------- Настройки (prototype V.settings): the legacy sections, one section per page ---------- */
 var V4_SETS=[['account','lock','v4_set_account','Вход и защита','v4_set_account_sub','Email, пароль, выход'],['notifications','bell','notifications','Уведомления','v4_set_ntf_sub','Push, события, звуки, тихие часы'],['appearance','sun','v4_set_look','Оформление и язык','v4_set_look_sub','Тема и язык интерфейса'],['privacy','shield','v4_set_privacy','Приватность','v4_set_privacy_sub','Заблокированные, правила, условия'],['app','download','v4_set_app','Приложение','v4_set_app_sub','Установить на главный экран'],['danger','trash','v4_set_danger','Удаление аккаунта','v4_set_danger_sub','Деактивация с возвратом 30 дней']];
+function v4OnSettings(){var r=String(state.route||'');return r==='/settings'||r.indexOf('/settings/')===0;}
+function v4SettingsRefresh(){if(v4OnSettings())v4ViewSettings(String(state.route).split('/')[2]||'');}
 function v4ViewSettings(sub){
   viewSettings();
   var body=document.getElementById('vc-main-body'),sv=body&&body.querySelector('.settings-view');if(!sv)return;

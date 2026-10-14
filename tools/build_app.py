@@ -102,6 +102,12 @@ patch("  if (route === '/support') return viewSupport();", "  if (route === '/su
 patch("  if (route === '/store') return viewStore();", "  if (route === '/purchases') return v4ViewPurchases();\n  if (route === '/store') return viewStore();")
 patch("function viewStore(){\n  var body = document.getElementById('vc-main-body');\n  if (!body) return;\n  if(state.storeVisitKey){", "function viewStore(){return v4ViewStore();}\nfunction viewStoreLegacy(){\n  var body = document.getElementById('vc-main-body');\n  if (!body) return;\n  if(state.storeVisitKey){")
 
+# 8) legacy settings refreshes (push state, account security) re-render the v4 settings page on /settings and its sections
+if "state.route==='/settings')viewSettings();" in src:
+    n = src.count("state.route==='/settings')viewSettings();")
+    assert n == 6, n
+    src = src.replace("state.route==='/settings')viewSettings();", "v4OnSettings())v4SettingsRefresh();")
+
 open(APP, 'w', encoding='utf-8', newline='\n').write(src)
 print('app.js built:', len(src), 'chars')
 

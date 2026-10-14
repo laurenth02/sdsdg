@@ -86,7 +86,9 @@
 #app.v4 .v4-edit .pe-count{display:block;text-align:right}
 @media (max-width:979px){#app.v4 .v4-edit .topbar .btn{height:36px;padding:0 14px}}
 /* Store */
-#app.v4 .v4-store .pack{width:100%;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--ink)}
+#app.v4 .v4-store .pack{position:relative;display:flex!important;flex-direction:row!important;align-items:center!important;gap:12px;width:100%;min-height:0;margin:0;padding:14px 16px!important;border:0!important;border-radius:var(--r)!important;background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)!important;font:inherit;text-align:left!important;cursor:pointer;color:var(--ink)}
+#app.v4 .v4-store .pack.best{box-shadow:0 0 0 2px var(--coral)!important}
+#app.v4 .v4-store .pack .tag{position:absolute;top:-9px;right:14px;height:20px;padding:0 8px;border-radius:999px;background:var(--coral);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center}
 #app.v4 .v4-store .pack .tx,#app.v4 .v4-store .pack .pr{display:block}
 #app.v4 .v4-store .amts button{border:0;font:inherit;cursor:pointer}
 #app.v4 .v4-store .v4-networks .chip{border:0;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
