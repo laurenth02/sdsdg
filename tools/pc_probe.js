@@ -26,6 +26,23 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await client.send('CSS.enable');
   const { root } = await client.send('DOM.getDocument', { depth: -1 });
   for (const sel of sels.split(';')) {
+    if (sel.startsWith('dump:')) {  // compact outline of a subtree: tag.class#id [text], depth from env VC_DEPTH (default 4)
+      const outline = await page.evaluate((s, maxDepth) => {
+        const root = document.querySelector(s); if (!root) return 'not found: ' + s;
+        const out = [];
+        (function walk(el, d) {
+          if (out.length > 140 || d > maxDepth) return;
+          const cls = typeof el.className === 'string' && el.className.trim() ? '.' + el.className.trim().split(/\s+/).slice(0, 5).join('.') : '';
+          const own = Array.from(el.childNodes).filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join(' ').slice(0, 40);
+          const r = el.getBoundingClientRect();
+          out.push('  '.repeat(d) + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + cls + ' [' + Math.round(r.x) + ',' + Math.round(r.y) + ' ' + Math.round(r.width) + 'x' + Math.round(r.height) + ']' + (own ? ' "' + own + '"' : ''));
+          Array.from(el.children).forEach((c) => walk(c, d + 1));
+        })(root, 0);
+        return out.join('\n');
+      }, sel.slice(5), parseInt(process.env.VC_DEPTH || '4', 10));
+      console.log('== ' + sel + '\n' + outline);
+      continue;
+    }
     const { nodeIds } = await client.send('DOM.querySelectorAll', { nodeId: root.nodeId, selector: sel });
     console.log('== ' + sel + '  count=' + nodeIds.length);
     if (!nodeIds.length) continue;
