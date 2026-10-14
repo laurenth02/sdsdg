@@ -151,6 +151,7 @@ srcs = '\n'.join(open(f, encoding='utf-8').read() for f in sorted(glob.glob(os.p
 ru = {}
 for k, v in re.findall(r"\bt\('(v4_[a-z0-9_]+)','((?:[^'\\]|\\.)*)'\)", srcs): ru.setdefault(k, v)
 for k, v in re.findall(r"'(v4_(?:set|faq)_[a-z0-9_]+)','((?:[^'\\]|\\.)*)'", srcs): ru.setdefault(k, v)
+ru.update(tr.get('ru', {}))
 data = {'ru': ru, 'uk': {k: v for k, v in tr['uk'].items() if k in ru}, 'en': {k: v for k, v in tr['en'].items() if k in ru}}
 IB, IE = '/* >>> v4 stage 4 strings (tools/v4/i18n_v4.json) >>> */', '/* <<< v4 stage 4 strings <<< */'
 blk = IB + '\n(function(E){\n  var D=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n  Object.keys(D).forEach(function(lang){E[lang]=Object.assign(E[lang]||{},D[lang]);});\n})(window.VC_I18N_EXTRA);\n' + IE

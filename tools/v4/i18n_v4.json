@@ -109,7 +109,11 @@
 "v4_faq_q4": "Хто веде анкети?",
 "v4_faq_a4": "Частина анкет — віртуальні співрозмовниці: за ними стоять оператори та AI-асистент. Це вказано в правилах і в самих анкетах, ми цього не приховуємо.",
 "v4_faq_q5": "Як видалити акаунт?",
-"v4_faq_a5": "Налаштування → «Видалення акаунта». Акаунт деактивується на 30 днів — за цей час можна повернутися, просто увійшовши знову. Потім дані видаляються."
+"v4_faq_a5": "Налаштування → «Видалення акаунта». Акаунт деактивується на 30 днів — за цей час можна повернутися, просто увійшовши знову. Потім дані видаляються.",
+"v4_online_now": "Зараз у мережі",
+"today": "Сьогодні",
+"yesterday": "Вчора",
+"more": "Ще"
 },
 "en": {
 "v4_likes_sub2": "Who you liked and who liked you",
@@ -221,6 +225,16 @@
 "v4_faq_q4": "Who runs the profiles?",
 "v4_faq_a4": "Some profiles are virtual companions run by operators and an AI assistant. This is stated in the rules and on the profiles themselves — we don't hide it.",
 "v4_faq_q5": "How do I delete my account?",
-"v4_faq_a5": "Settings → “Delete account”. The account is deactivated for 30 days — you can come back by simply signing in again. After that the data is deleted."
+"v4_faq_a5": "Settings → “Delete account”. The account is deactivated for 30 days — you can come back by simply signing in again. After that the data is deleted.",
+"v4_online_now": "Online now",
+"today": "Today",
+"yesterday": "Yesterday",
+"more": "More"
+},
+"ru": {
+"v4_online_now": "Сейчас в сети",
+"today": "Сегодня",
+"yesterday": "Вчера",
+"more": "Ещё"
 }
 }
