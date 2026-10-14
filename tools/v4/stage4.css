@@ -151,3 +151,4 @@ html[data-theme="dark"] #app.v4 .chat-compact-view .bub.me{background:linear-gra
 #app.v4 .chat-compact-view .composer .c-add,#app.v4 .chat-compact-view .composer .c-add .i,#app.v4 .chat-compact-view .composer .c-add svg{color:var(--ink)!important}
 body #app.v4 .v4 .actions .act.undo.back-button,body #app.v4 .v4 .act.undo.back-button{background:var(--surface)!important;background-color:var(--surface)!important;color:var(--ink)!important;opacity:1}
 body #app.v4 .v4 .act.undo.back-button[disabled]{opacity:.6}
+#app.v4 .chat-compact-view .composer .chat-compose-field{flex-direction:row!important;align-items:flex-end!important}
