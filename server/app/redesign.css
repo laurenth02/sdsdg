@@ -1325,16 +1325,18 @@ html[data-theme="dark"] #app.v4 .pp-actions #pp-gift{color:#fff!important}
 #app.v4 .v4 .crow .cmeta{align-self:stretch;justify-content:flex-start;padding-top:3px}
 #app.v4 .v4 .cthread .chat-empty{border:0;border-radius:0;background:none}
 /* Sidebar wallet: both buttons share the row */
-#app.v4>.sidebar .wallet .row2{flex-direction:column;gap:8px}
-#app.v4>.sidebar .wallet .row2 .btn{width:100%;height:40px;flex:none;padding:0 12px}
+/* Sidebar wallet: one full-width «Пополнить» like the prototype — «Пакеты и баланс» is the menu item right above */
+#app.v4>.sidebar .wallet .row2 [data-rail-store]{display:none}
+#app.v4>.sidebar .wallet .row2 .btn{width:100%;flex:1 1 auto}
 /* Settings switches: app.css also shifts the knob by translateX(18px) */
 #app.v4 .set-section input[type=checkbox]:checked::after{transform:none}
 #app.v4 .vc-context-cta::before,#app.v4 .vc-context-cta::after{display:none}
 @media (max-width:979px){
   /* v4 page titles: app.css hides every .topbar in the headerless shell */
   /* !important: the title row also carries .left, which app.css hides with !important (the old left column) */
-  #app.v4 .v4 .topbar.vis-m{display:flex!important;align-items:center;gap:10px;min-height:44px;margin:0 0 12px;padding:0}
-  #app.v4 .v4 .topbar.vis-m h1{flex:1;min-width:0;margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #app.v4 .topbar.vis-m{display:flex!important;align-items:center;justify-content:flex-start;gap:10px;min-height:44px;margin:0 0 12px;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+  #app.v4 .topbar.vis-m h1{flex:1;min-width:0;margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.15;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+  #app.v4 .v4-page>.topbar.vis-m{margin-top:calc(14px + var(--safe-t))}
   /* Legacy views: their wrappers (.profile-view, .store-view, .vcn-page-wrap …) carry the 16px sides of the prototype */
   #app.v4>.center>.main-body{padding:calc(14px + var(--safe-t)) 0 32px!important}
   #app.v4 .v4-disc-tabs{padding:2px 16px 10px}
