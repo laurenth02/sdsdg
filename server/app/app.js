@@ -1937,7 +1937,7 @@ function vcStoreBuyHtml(){
   var packs=(state.storePacks||[]).filter(function(p){return p.fulfillment==='chat_slots';}),canBuy=!!state.testPayments||vcCryptoLive(),rows='';
   for(var i=0;i<packs.length;i++){
     var p=packs[i],chats=Math.max(1,parseInt(p.chats,10)||1),eur=Number(p.eur)||0,best=chats===3;
-    rows+='<button type="button" class="vc-store-pack'+(best?' is-best':'')+'" data-store-pack="'+h(p.pack_id)+'"'+(canBuy?'':' disabled aria-disabled="true"')+'><span class="vc-store-pack-copy"><strong>'+h(chatCountLabel(chats))+'</strong><small>'+h(t('chat_pack_meta','{n} сообщений в каждом чате').replace('{n}',String(p.messages_per_chat||10)))+'</small></span>'+(best?'<em>'+h(t('pack_popular','Выгодно'))+'</em>':'')+'<span class="vc-store-pack-price"><b>'+(vcCryptoDirectPrices()?'<s>€'+eur.toFixed(2)+'</s> '+h(vcUsdt(eur)):'€'+eur.toFixed(2))+'</b>'+(chats>1?'<small>'+(vcCryptoDirectPrices()?h(vcUsdt(eur/chats)):'€'+(eur/chats).toFixed(2))+' '+h(t('per_chat','за чат'))+'</small>':'')+'</span></button>';
+    rows+='<button type="button" class="vc-store-pack'+(best?' is-best':'')+'" data-store-pack="'+h(p.pack_id)+'"'+(canBuy?'':' disabled aria-disabled="true"')+'><span class="vc-store-pack-n" aria-hidden="true">'+chats+'</span><span class="vc-store-pack-copy"><strong>'+h(chatCountLabel(chats))+'</strong><small>'+h(t('chat_pack_meta','{n} сообщений в каждом чате').replace('{n}',String(p.messages_per_chat||10)))+'</small></span>'+(best?'<em>'+h(t('pack_popular','Выгодно'))+'</em>':'')+'<span class="vc-store-pack-price"><b>'+(vcCryptoDirectPrices()?'<s>€'+eur.toFixed(2)+'</s> '+h(vcUsdt(eur)):'€'+eur.toFixed(2))+'</b>'+(chats>1?'<small>'+(vcCryptoDirectPrices()?h(vcUsdt(eur/chats)):'€'+(eur/chats).toFixed(2))+' '+h(t('per_chat','за чат'))+'</small>':'')+'</span></button>';
   }
   var packsBody=packs.length?'<div class="vc-store-pack-list">'+rows+'</div>':(state.cryptoPacks===null?'<div class="vc-store-loading"><div class="spin"></div></div>':'<p class="vc-store-note">'+h(t('packs_unavailable_why','Пакеты станут доступны после подключения оплаты. Сейчас покупки работают из чата.'))+'</p>');
   return '<div class="vc-store-buy">'+
@@ -4744,7 +4744,7 @@ function viewStore(){
       promoHtml='<article class="store-live-promo" aria-live="polite"><div class="store-live-promo-icon">'+semanticGlassIcon('star')+'</div><div class="store-live-promo-copy"><span>'+h(t('promo_personal_offer','Персональное предложение'))+'</span><strong>'+h(t('promo_same_price','Больше общения по специальной цене'))+'</strong><small>'+h(promoChannel)+'</small></div><div class="store-live-promo-clock"><span>'+h(t('promo_expires_in','Закончится через'))+'</span><strong id="vc-store-promo-time">'+h(storePromoRemaining(promo.expires_at))+'</strong></div></article>';
     }
   }
-  body.innerHTML = '<div class="store-view store-launch">' +
+  body.innerHTML = '<div class="store-view store-launch">' + '<div class="topbar left vis-m"><h1>'+h(t('v4_nav_store','Пакеты и баланс'))+'</h1></div>' +
     '<div class="store-hero"><div class="sh-bal"><span class="sh-star">'+semanticGlassIcon('wallet')+'</span>'+vibeAmount(bal)+'</div><div class="sh-label">'+h(t('account_balance','Баланс аккаунта'))+'</div>'+(state.testPayments?'<span class="vc-test-badge">'+h(t('test_mode','Тестовый режим'))+'</span>':'')+'<div class="store-anchor"><strong>1 чат · €7</strong></div></div>' +
     promoHtml +
     vcStoreBuyHtml() +
