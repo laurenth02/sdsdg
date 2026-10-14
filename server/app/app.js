@@ -3957,13 +3957,10 @@ function viewChats(){
   var hd='<div class="hd"><div class="row-between"><h1 class="page-h">'+h(t('nav_chats','Чаты'))+'</h1>'+(chats.length?'<button type="button" class="ibtn" id="v4-chat-search-btn" aria-expanded="false" aria-controls="vc-chat-search" aria-label="'+h(t('search_chats','Поиск по чатам'))+'">'+v4Icon('search')+'</button>':'')+'</div>'+
     (chats.length?'<label class="input-wrap mt12" id="v4-chat-search-wrap" hidden>'+v4Icon('search')+'<input class="input" id="vc-chat-search" type="search" aria-label="'+h(t('search_chats','Поиск по чатам'))+'" placeholder="'+h(t('search_chats','Поиск по чатам'))+'"></label>'+
     '<div class="tabs" id="vc-chat-tabs"><button type="button" class="tab on" data-chat-tab="all">'+h(t('v4_tab_all','Все'))+'</button><button type="button" class="tab" data-chat-tab="unread">'+h(t('v4_tab_unread','Непрочитанные'))+(unreadN?'<span class="n">'+unreadN+'</span>':'')+'</button><button type="button" class="tab" data-chat-tab="online"><span class="dot"></span>'+h(t('v4_online','В сети'))+(onlineN?'<span class="n">'+onlineN+'</span>':'')+'</button></div>':'')+'</div>';
-  var strip='';
-  if(chats.length){
-    strip='<div class="chat-match-scroller"><div class="faces" id="vc-chat-match-strip" tabindex="0" aria-label="'+h(t('nav_chats','Чаты'))+'">';
-    for(var si=0;si<chats.length&&si<18;si++){
-      var sm=chats[si],sav=sm.photo||sm.avatar||'',sn=localizedPersonName(sm.name||sm.fullname||''),stripUnread=parseInt(sm.unread,10)||0;
-      strip+='<button type="button" class="face'+(stripUnread?' has-unread':'')+'" data-match-chat="'+(sm.peer_id||sm.id||0)+'" aria-label="'+h(sn)+'"><span class="chat-match-avatar avatar'+(sm.online?' ring':'')+'" style="background:'+(sav?'url('+h(sav)+') center/cover,':'')+avatarBg(sn)+'">'+(sav?'':h(initials(sn)))+(stripUnread?'<b class="chat-match-unread">'+(stripUnread>99?'99+':stripUnread)+'</b>':'')+'</span><small>'+h(sn)+'</small></button>';
-    }
+  var strip='',sugg=v4OnlineSuggestions(chats);
+  if(sugg.length){
+    strip='<h2 class="sec v4-online-h">'+h(t('v4_online_now','Сейчас в сети'))+' <a href="#/" data-v4-online-all>'+h(t('all','Все'))+'</a></h2><div class="chat-match-scroller"><div class="faces" id="vc-chat-match-strip" tabindex="0" aria-label="'+h(t('v4_online_now','Сейчас в сети'))+'">';
+    for(var si=0;si<sugg.length&&si<18;si++){var sm=sugg[si],sav=sm.photo||'',sn=localizedPersonName(sm.name||'');strip+='<button type="button" class="face" data-match-chat="'+(parseInt(sm.id,10)||0)+'" aria-label="'+h(sn)+'"><span class="chat-match-avatar avatar ring" style="background:'+(sav?'url('+h(vcPhotoCopy(sav,240)||sav)+') center/cover,':'')+avatarBg(sn)+'">'+(sav?'':h(initials(sn)))+'<i class="on"></i></span><small>'+h(sn)+'</small></button>';}
     strip+='</div><button type="button" class="chat-match-next ibtn" id="vc-chat-match-next" aria-label="'+h(t('next','Дальше'))+'">'+glassIcon('back','vc-chat-next-icon vc-flip-horizontal')+'</button></div>';
   }
   var rows='';for(i=0;i<chats.length;i++)rows+=v4ChatRowHtml(chats[i],0);
@@ -5756,7 +5753,7 @@ function v4RenderProfileDetail(p){
   function plk(ref){return parseInt(likedPhotos[String(ref)],10)===1;}
   var segs=photos.length>1?'<div class="segs">'+photos.map(function(_,i){return '<i class="'+(i===ph?'on':'')+'"></i>';}).join('')+'</div>':'';
   var cta=v4HasChat(pid)?t('v4_open_chat','Открыть чат'):t('send_message','Написать');
-  var sticky='<div class="stickybar"><button type="button" class="hrt'+(p.liked?' on':'')+'" data-plike aria-pressed="'+(p.liked?'true':'false')+'" aria-label="'+h(t('like','Нравится'))+'">'+v4Icon('heartf')+'</button><button type="button" class="btn btn-primary btn-lg cta vc-write-cta" data-pmsg>'+v4Icon('chat')+h(cta)+'</button><button type="button" class="ibtn" style="width:56px;height:56px" data-pgift aria-label="'+h(t('gift','Подарок'))+'">'+v4Icon('gift')+'</button></div>';
+  var sticky='<div class="stickybar"><button type="button" class="hrt'+(p.liked?' on':'')+'" data-plike aria-pressed="'+(p.liked?'true':'false')+'" aria-label="'+h(t('like','Нравится'))+'">'+v4Icon('heartf')+'</button><button type="button" class="btn btn-primary btn-lg cta" data-pmsg>'+v4Icon('chat')+h(cta)+'</button><button type="button" class="ibtn" style="width:56px;height:56px" data-pgift aria-label="'+h(t('gift','Подарок'))+'">'+v4Icon('gift')+'</button></div>';
   var gal='<div class="gal" id="v4-gal"><img id="v4-gal-img" src="'+h(photos[ph])+'" alt="'+h(name)+'" draggable="false"><div class="grad-t"></div><div class="grad-b"></div>'+segs+
     '<div class="bar"><button type="button" class="ibtn" id="pp-back" aria-label="'+h(t('back','Назад'))+'">'+v4Icon('back')+'</button><span class="sp"></span><button type="button" class="ibtn" id="pp-share" aria-label="'+h(t('share','Поделиться'))+'">'+v4Icon('share')+'</button><button type="button" class="ibtn" id="v4-pp-more" aria-label="'+h(t('more','Ещё'))+'">'+v4Icon('more')+'</button></div>'+
     (photos.length>1?'<div class="tapzones"><button type="button" data-pv aria-label="'+h(t('prev_photo','Предыдущее фото'))+'"></button><button type="button" data-nx aria-label="'+h(t('next_photo','Следующее фото'))+'"></button></div>':'')+

@@ -1399,7 +1399,7 @@ html[data-theme="dark"] #app.v4 .pp-actions #pp-gift{color:#fff!important}
 #app.v4 .v4-ntf .vcn-chip.tab{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;margin:0;border:0!important;border-radius:999px!important;background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)!important;color:var(--muted)!important;font:600 14px/1 inherit;font-family:inherit}
 #app.v4 .v4-ntf .vcn-chip.tab.on{background:var(--solid)!important;color:var(--solid-ink)!important;box-shadow:none!important}
 #app.v4 .v4-ntf .vcn-chip.tab b{min-width:0;height:auto;padding:0;background:none!important;color:inherit!important;font-size:12px;font-weight:600;opacity:.7;box-shadow:none!important}
-#app.v4 .v4-ntf .vcn-scroll{overflow:visible!important;max-height:none!important;padding:0!important;margin:0!important;background:none!important}
+#app.v4 .v4-ntf .vcn-scroll{overflow:visible!important;max-height:none!important;padding:0!important;margin:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important}
 #app.v4 .v4-ntf .vcn-scroll>.spin{margin:40px auto}
 #app.v4 .v4-ntf .nrow{cursor:pointer}
 #app.v4 .v4-ntf .vcn-empty{display:block;text-align:center;padding:36px 20px;margin:16px 0 0;background:none!important;border:0!important;box-shadow:none!important;color:var(--muted)}

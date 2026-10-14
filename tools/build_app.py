@@ -66,7 +66,7 @@ patch("  }else{\n    if(fresh.length)html+=group(t('ntf_group_new','Новые')
 patch("'</h1>'+v4BalancePill()+'</div>'+\n    (chats.length?'<label class=\"input-wrap mt12\">'",
       "'</h1>'+(chats.length?'<button type=\"button\" class=\"ibtn\" id=\"v4-chat-search-btn\" aria-expanded=\"false\" aria-controls=\"vc-chat-search\" aria-label=\"'+h(t('search_chats','Поиск по чатам'))+'\">'+v4Icon('search')+'</button>':'')+'</div>'+\n    (chats.length?'<label class=\"input-wrap mt12\" id=\"v4-chat-search-wrap\" hidden>'")
 old_strip_start = "  var strip='';\n  if(chats.length){\n    strip='<div class=\"chat-match-scroller\">"
-if 'v4OnlineSuggestions(chats)' not in src:
+if 'sugg=v4OnlineSuggestions(chats)' not in src:
     a = src.index(old_strip_start)
     b = src.index("  var rows='';for(i=0;i<chats.length;i++)rows+=v4ChatRowHtml(chats[i],0);", a)
     new_strip = ("  var strip='',sugg=v4OnlineSuggestions(chats);\n"
