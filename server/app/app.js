@@ -2175,11 +2175,11 @@ function setActiveNav(route){
   if (route === '/' || route === '/discover') key = 'discover';
   else if (route === '/likes') key = 'likes';
   else if (route === '/chats' || route.indexOf('/chat/') === 0) key = 'chats';
-  else if (route === '/store') key = 'store';
+  else if (route === '/store' || route === '/purchases') key = 'store';
   else if (route === '/profile' || route.indexOf('/profile/') === 0) key = 'profile';
   else if (route === '/activity' || route === '/notifications') key = 'notifications';
-  else if (route === '/settings') key = 'settings';
-  else if (route === '/support') key = 'support';
+  else if (route === '/settings' || route.indexOf('/settings/') === 0) key = 'settings';
+  else if (route === '/support' || route.indexOf('/support/') === 0) key = 'support';
   items.forEach(function(it){var active=it.dataset.key===key;it.classList.toggle('active',active);if(active)it.setAttribute('aria-current','page');else it.removeAttribute('aria-current');});
   var bn = $$('.bn-item');
   var bkey = key;
@@ -2478,7 +2478,7 @@ function railHtml(){
     '</div>' +
     '<div class="me user-mini account" data-route="/profile">' +
       '<div class="avatar navy" '+avStyle+'>'+avHtml+'</div>' +
-      '<div><b>'+nm+(age?', '+h(age):'')+'</b><span title="'+h(accountLabel)+'">'+h(accountLabel)+'</span></div>' +
+      '<div><b>'+nm+(age?', '+h(age):'')+'</b><span title="'+h(accountLabel)+'">'+h(v4RailSub()||accountLabel)+'</span></div>' +
     '</div>';
 }
 function wireRail(){
@@ -4114,7 +4114,7 @@ function viewChat(peerId){
       '<div class="chat-header">' +
         '<button type="button" class="chat-back vc-icon-glass" id="vc-chat-back" aria-label="'+h(t('back','Назад'))+'">'+glassIcon('back')+'</button>' +
         '<div class="av" id="vc-chat-avatar" '+avStyle+'>'+avHtml+(info.online?'<span class="dot"></span>':'')+'</div>' +
-        '<div class="ch-info"><div class="ch-nm" id="vc-chat-name">'+nm+'</div><small class="ch-st'+(info.online?' is-online':'')+'" id="vc-chat-presence">'+((info.online||info.last_seen)?h(chatPresenceText(info)):'')+'</small>'+profileTrustHtml(info.trust,false)+'</div>' +
+        '<div class="ch-info"><div class="ch-nm" id="vc-chat-name">'+nm+(parseInt(info.age,10)?', '+parseInt(info.age,10):'')+'</div><small class="ch-st'+(info.online?' is-online':'')+'" id="vc-chat-presence">'+((info.online||info.last_seen)?h(chatPresenceText(info)):'')+'</small>'+profileTrustHtml(info.trust,false)+'</div>' +
         '<button type="button" class="chat-floating-gift vc-icon-glass" id="vc-chat-floating-gift" aria-label="'+h(t('chat_gift','Подарок'))+'" title="'+h(t('chat_gift','Подарок'))+'">'+glassIcon('gift')+'</button>' +
         '<button type="button" class="icon-btn vc-icon-glass" id="vc-chat-block" aria-label="'+h(t('chat_actions','Действия с чатом'))+'" title="'+h(t('chat_actions','Действия с чатом'))+'">'+glassIcon('more')+'</button>' +
       '</div>' +
@@ -4125,13 +4125,13 @@ function viewChat(peerId){
       '</div>'+
       
       '<div class="composer chat-composer">' +
-        '<button type="button" class="c-add vc-icon-glass" id="vc-c-add" aria-label="'+h(t('attachments','Вложения'))+'" aria-haspopup="menu" aria-expanded="false">'+glassIcon('attach')+'</button>' +
-        '<button type="button" class="c-express vc-icon-glass" id="vc-c-express" aria-label="'+h(t('emoji','Emoji'))+' · '+h(t('stickers','Стикеры'))+'" aria-haspopup="dialog">'+glassIcon('sticker')+'</button>' +
+        '<button type="button" class="c-add vc-icon-glass" id="vc-c-add" aria-label="'+h(t('attachments','Вложения'))+'" aria-haspopup="menu" aria-expanded="false">'+v4Icon('plus')+'</button>' +
         '<div class="chat-compose-field">' +
           '<textarea id="vc-c-input" enterkeyhint="send" aria-describedby="vc-c-kbd-hint" aria-label="'+h(t('chat_msg_ph','Сообщение…'))+'" placeholder="'+h(t('chat_msg_ph','Сообщение…'))+'" rows="1"></textarea>' +
+          '<button type="button" class="c-express" id="vc-c-express" aria-label="'+h(t('emoji','Emoji'))+' · '+h(t('stickers','Стикеры'))+'" aria-haspopup="dialog">'+v4Icon('smile')+'</button>' +
           '<small class="chat-kbd-hint" id="vc-c-kbd-hint">'+h(t('chat_kbd_hint','Enter — отправить · Shift+Enter — новая строка'))+'</small>' +
         '</div>' +
-        '<button type="button" class="c-send vc-icon-glass" id="vc-c-send" aria-label="'+h(t('send','Отправить'))+'" disabled>'+glassIcon('send')+'</button>' +
+        '<button type="button" class="c-send vc-icon-glass" id="vc-c-send" aria-label="'+h(t('send','Отправить'))+'" disabled>'+v4Icon('send')+'</button>' +
       '</div>' +
       '<input type="file" id="vc-chat-image" accept="image/*,.heic,.heif" hidden>' +
     '</div>';
@@ -6113,6 +6113,13 @@ function v4SupportTicket(id){
       (tk.status!=='closed'?'<div class="composer mt16" style="border:0;padding:0;background:none"><div class="inp"><textarea id="v4-tk-ta" rows="1" maxlength="2000" placeholder="'+h(t('support_reply','Добавить сообщение'))+'"></textarea></div><button type="button" class="send" id="v4-tk-send" aria-label="'+h(t('send','Отправить'))+'">'+v4Icon('send')+'</button></div>':'<div class="note mt16">'+v4Icon('check')+'<div>'+h(t('v4_ticket_closed','Заявка закрыта. Если проблема повторилась — создайте новую.'))+'</div></div>');
     var sb=document.getElementById('v4-tk-send');if(sb)sb.addEventListener('click',function(){var ta=document.getElementById('v4-tk-ta'),msg=ta.value.trim();if(!msg)return;sb.disabled=true;api('support_comment',{id:id,message:msg}).then(function(rr){if(rr&&rr.ok){toast(t('sent','Отправлено'),'success');v4SupportTicket(id);}else{sb.disabled=false;handleApiError(rr,'Error');}}).catch(function(){sb.disabled=false;toast(t('network_error','Ошибка сети'),'error');});});
   }).catch(function(){var host=document.getElementById('v4-ticket');if(host)host.innerHTML='<div class="empty"><div class="em">'+v4Icon('refresh')+'</div><b>'+h(t('network_error','Ошибка сети'))+'</b></div>';});
+}
+
+/* ---------- Оболочка: строка профиля в меню (prototype sidebar: «Имя, возраст · Город · знак») ---------- */
+function v4RailSub(){
+  var p=(state.me&&state.me.profile)||{},city=p.city?(typeof localizedCity==='function'?localizedCity(p.city):p.city):'';
+  var z=profileZodiacText(p.zodiac_info||{},p.zodiac);
+  return [city,z].filter(Boolean).join(' · ');
 }
 /* <<< v4 stage 4 screens <<< */
 

@@ -714,9 +714,9 @@ html[data-theme="dark"] #app.v4>.sidebar [aria-checked="true"] .vc-rail-theme-tr
  * ============================================================================ */
 @media (min-width:980px){.v4 div.vis-d,.v4 section.vis-d,.v4 p.vis-d,.v4 aside.vis-d{display:block!important}}
 .v4 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-#app.v4 .v4 button{font:inherit;cursor:pointer}
+#app.v4 .v4 button{cursor:pointer}
 /* Element-level reset: must not outrank the component rules (.tab.on, .btn-primary, .chip …) that colour buttons. */
-:where(#app.v4 .v4) button{color:inherit;border:0;background:none}
+:where(#app.v4 .v4) button{font:inherit;color:inherit;border:0;background:none}
 #app.v4 .v4 .btn .v4-ic{width:20px;height:20px}
 #app.v4 .v4 .ibtn .v4-ic{width:22px;height:22px}
 #app.v4 .v4 .row .chev{margin-left:auto}
@@ -1466,4 +1466,44 @@ html[data-theme="dark"] #app.v4 .pp-actions #pp-gift{color:#fff!important}
 #app.v4 .v4 .check{border:0;background:none;padding:0;text-align:left;font:inherit;font-size:14px;width:100%}
 #app.v4 .v4 .v4-ticket-card{max-width:640px;margin:0 auto}
 @media (max-width:979px){#app.v4 .v4 .v4-ticket-card{background:none;box-shadow:none;padding:0}}
+/* Sidebar (prototype .sidebar): grey active item, no theme switch (theme lives in Settings → Оформление) */
+#app.v4>.sidebar .nav-item.active{background:var(--chip)!important;color:var(--ink)!important;box-shadow:none!important}
+#app.v4>.sidebar .nav-item.active svg,#app.v4>.sidebar .nav-item.active .i{color:var(--ink)!important}
+#app.v4>.sidebar .vc-rail-theme{display:none!important}
+/* Discover: the rewind button looks like the prototype's secondary round actions */
+#app.v4 .v4 .act.undo{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 8px 20px -10px rgba(18,20,42,.45)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#app.v4 .v4 .act.undo[disabled]{opacity:.55}
+/* Chat (prototype .chat): white header, coral own bubbles, white partner bubbles, «+ | поле со смайлом | отправить» */
+#app.v4 .chat-compact-view .chat-header .ch-nm{font-weight:800;font-size:16px}
+#app.v4 .chat-compact-view .chat-header .ch-st{font-size:12px;color:var(--muted)}
+#app.v4 .chat-compact-view .chat-header .ch-st.is-online{color:var(--green)!important;font-weight:600}
+#app.v4 .chat-compact-view .bub.me{background:linear-gradient(140deg,var(--coral2),var(--coral))!important;color:#fff!important;border-radius:20px 20px 6px 20px!important;box-shadow:none!important}
+html[data-theme="dark"] #app.v4 .chat-compact-view .bub.me{background:linear-gradient(140deg,var(--coral2),var(--coral))!important}
+#app.v4 .chat-compact-view .bub.them{background:var(--surface)!important;color:var(--ink)!important;border-radius:20px 20px 20px 6px!important;box-shadow:0 0 0 1px var(--line)!important}
+#app.v4 .chat-compact-view .bub.me a{color:#fff}
+#app.v4 .chat-compact-view .composer.chat-composer{display:flex!important;align-items:flex-end;gap:8px;padding:8px 12px calc(10px + var(--safe-b))!important;background:var(--surface)!important;border-top:1px solid var(--line)!important;box-shadow:none!important}
+#app.v4 .chat-compact-view .composer .c-add{flex:none;width:44px;height:44px;border-radius:50%!important;background:var(--chip)!important;color:var(--ink)!important;box-shadow:none!important;display:grid;place-items:center;border:0!important}
+#app.v4 .chat-compact-view .composer .c-add .i{width:22px;height:22px}
+#app.v4 .chat-compact-view .composer .chat-compose-field{position:relative;flex:1;min-width:0;display:flex;align-items:flex-end;min-height:44px;border-radius:22px!important;background:var(--chip)!important;box-shadow:none!important;border:0!important;padding:0 6px 0 16px}
+#app.v4 .chat-compact-view .composer .chat-compose-field textarea{flex:1;min-width:0;min-height:44px;padding:11px 0!important;border:0!important;background:none!important;box-shadow:none!important;resize:none;font:inherit;font-size:16px;color:var(--ink);outline:none}
+#app.v4 .chat-compact-view .composer .chat-compose-field .chat-kbd-hint{display:none}
+#app.v4 .chat-compact-view .composer .c-express{flex:none;width:36px;height:36px;margin:4px 0;border:0;border-radius:50%;background:none!important;box-shadow:none!important;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+#app.v4 .chat-compact-view .composer .c-express .i{width:22px;height:22px}
+#app.v4 .chat-compact-view .composer .c-send{flex:none;display:grid!important;place-items:center;width:44px;height:44px;border:0!important;border-radius:50%!important;background:linear-gradient(140deg,var(--coral2),var(--coral))!important;color:#fff!important;box-shadow:0 10px 22px -10px rgba(255,75,43,.7)!important;opacity:1;visibility:visible}
+#app.v4 .chat-compact-view .composer .c-send[disabled]{background:var(--chip)!important;color:var(--muted)!important;box-shadow:none!important}
+#app.v4 .chat-compact-view .composer .c-send .i{width:20px;height:20px}
+/* Settings → notifications: groups as separate prototype cards */
+#app.v4 .v4-sets .set-section:has(#vc-notif-prefs){background:none!important;box-shadow:none!important;padding:0!important}
+#app.v4 .v4-sets .set-section:has(#vc-notif-prefs)>.set-row{background:var(--surface);border-radius:var(--r);box-shadow:0 0 0 1px var(--line);padding:8px 16px;margin:0 0 12px;border:0}
+#app.v4 .v4-sets #vc-notif-prefs{padding:0!important;margin:0!important;border:0!important;background:none!important}
+#app.v4 .v4-sets .vc-notif-pref-group{background:var(--surface)!important;border-radius:var(--r)!important;box-shadow:0 0 0 1px var(--line)!important;padding:4px 16px!important;margin:0 0 12px!important;border:0!important}
+/* Auth (prototype V.login / V.signup): no card on phones, a 460px card on desktop, left-aligned 26px title */
+#app.auth-screen{background:var(--bg)}
+#app.auth-screen .auth-card{text-align:left}
+#app.auth-screen .auth-logo{justify-content:flex-start}
+#app.auth-screen .auth-title{font-size:26px!important;font-weight:800!important;letter-spacing:-.03em;line-height:1.15;text-align:left!important}
+#app.auth-screen .auth-sub{color:var(--muted)!important;font-size:16px!important;text-align:left!important}
+#app.auth-screen .auth-submit{height:56px;border-radius:999px!important;font-size:17px!important;font-weight:800!important;background:linear-gradient(140deg,var(--coral2),var(--coral))!important;color:#fff!important;box-shadow:0 14px 28px -12px rgba(255,75,43,.7)!important}
+#app.auth-screen .auth-magic{border-radius:999px!important;background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 0 0 1px var(--line)!important;font-weight:700!important}
+@media (max-width:979px){#app.auth-screen .auth-card{background:none!important;box-shadow:none!important;border:0!important;padding:20px 20px calc(24px + var(--safe-b))!important;max-width:none!important;margin:0!important}}
 /* <<< v4 stage 4 css <<< */

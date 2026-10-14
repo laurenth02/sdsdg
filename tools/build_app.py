@@ -108,6 +108,23 @@ if "state.route==='/settings')viewSettings();" in src:
     assert n == 6, n
     src = src.replace("state.route==='/settings')viewSettings();", "v4OnSettings())v4SettingsRefresh();")
 
+# 9) batch 3: active nav for sub-pages, sidebar profile line, chat header and composer in the prototype order
+patch("  else if (route === '/store') key = 'store';", "  else if (route === '/store' || route === '/purchases') key = 'store';")
+patch("  else if (route === '/settings') key = 'settings';", "  else if (route === '/settings' || route.indexOf('/settings/') === 0) key = 'settings';")
+patch("  else if (route === '/support') key = 'support';", "  else if (route === '/support' || route.indexOf('/support/') === 0) key = 'support';")
+patch("+'</b><span title=\"'+h(accountLabel)+'\">'+h(accountLabel)+'</span></div>' +", "+'</b><span title=\"'+h(accountLabel)+'\">'+h(v4RailSub()||accountLabel)+'</span></div>' +")
+patch("<div class=\"ch-nm\" id=\"vc-chat-name\">'+nm+'</div>", "<div class=\"ch-nm\" id=\"vc-chat-name\">'+nm+(parseInt(info.age,10)?', '+parseInt(info.age,10):'')+'</div>")
+patch("aria-haspopup=\"menu\" aria-expanded=\"false\">'+glassIcon('attach')+'</button>' +", "aria-haspopup=\"menu\" aria-expanded=\"false\">'+v4Icon('plus')+'</button>' +")
+patch("id=\"vc-c-send\" aria-label=\"'+h(t('send','Отправить'))+'\" disabled>'+glassIcon('send')+'</button>'", "id=\"vc-c-send\" aria-label=\"'+h(t('send','Отправить'))+'\" disabled>'+v4Icon('send')+'</button>'")
+EXPRESS = "        '<button type=\"button\" class=\"c-express vc-icon-glass\" id=\"vc-c-express\" aria-label=\"'+h(t('emoji','Emoji'))+' · '+h(t('stickers','Стикеры'))+'\" aria-haspopup=\"dialog\">'+glassIcon('sticker')+'</button>' +\n"
+if EXPRESS in src:
+    assert src.count(EXPRESS) == 1
+    src = src.replace(EXPRESS, '')
+    ta_end = "rows=\"1\"></textarea>' +\n"
+    i = src.index("'<textarea id=\"vc-c-input\"")
+    j = src.index(ta_end, i) + len(ta_end)
+    src = src[:j] + "          '<button type=\"button\" class=\"c-express\" id=\"vc-c-express\" aria-label=\"'+h(t('emoji','Emoji'))+' · '+h(t('stickers','Стикеры'))+'\" aria-haspopup=\"dialog\">'+v4Icon('smile')+'</button>' +\n" + src[j:]
+
 open(APP, 'w', encoding='utf-8', newline='\n').write(src)
 print('app.js built:', len(src), 'chars')
 
@@ -115,6 +132,8 @@ print('app.js built:', len(src), 'chars')
 CSS = os.path.join(ROOT, 'server', 'app', 'redesign.css')
 CB, CE = '/* >>> v4 stage 4 css (tools/v4/stage4.css) >>> */', '/* <<< v4 stage 4 css <<< */'
 css = open(CSS, encoding='utf-8').read()
+css = css.replace('#app.v4 .v4 button{font:inherit;cursor:pointer}', '#app.v4 .v4 button{cursor:pointer}')
+css = css.replace(':where(#app.v4 .v4) button{color:inherit;border:0;background:none}', ':where(#app.v4 .v4) button{font:inherit;color:inherit;border:0;background:none}')
 part = open(os.path.join(ROOT, 'tools', 'v4', 'stage4.css'), encoding='utf-8').read().rstrip('\n')
 if CB in css:
     css = css[:css.index(CB)] + CB + '\n' + part + '\n' + CE + css[css.index(CE) + len(CE):]
@@ -122,3 +141,22 @@ else:
     css = css.rstrip('\n') + '\n\n' + CB + '\n' + part + '\n' + CE + '\n'
 open(CSS, 'w', encoding='utf-8', newline='\n').write(css)
 print('redesign.css built:', len(css), 'chars')
+
+# 10) i18n: ru (code defaults) + uk/en translations of the stage-4 keys, as one merge block between markers (same pattern as stages 1-2)
+import json
+I18N = os.path.join(ROOT, 'server', 'app', 'i18n-extra.js')
+loc = open(I18N, encoding='utf-8').read()
+tr = json.load(open(os.path.join(ROOT, 'tools', 'v4', 'i18n_v4.json'), encoding='utf-8'))
+srcs = '\n'.join(open(f, encoding='utf-8').read() for f in sorted(glob.glob(os.path.join(ROOT, 'tools', 'v4', 'screens*.js'))))
+ru = {}
+for k, v in re.findall(r"\bt\('(v4_[a-z0-9_]+)','((?:[^'\\]|\\.)*)'\)", srcs): ru.setdefault(k, v)
+for k, v in re.findall(r"'(v4_(?:set|faq)_[a-z0-9_]+)','((?:[^'\\]|\\.)*)'", srcs): ru.setdefault(k, v)
+data = {'ru': ru, 'uk': {k: v for k, v in tr['uk'].items() if k in ru}, 'en': {k: v for k, v in tr['en'].items() if k in ru}}
+IB, IE = '/* >>> v4 stage 4 strings (tools/v4/i18n_v4.json) >>> */', '/* <<< v4 stage 4 strings <<< */'
+blk = IB + '\n(function(E){\n  var D=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n  Object.keys(D).forEach(function(lang){E[lang]=Object.assign(E[lang]||{},D[lang]);});\n})(window.VC_I18N_EXTRA);\n' + IE
+if IB in loc:
+    loc = loc[:loc.index(IB)] + blk + loc[loc.index(IE) + len(IE):]
+else:
+    loc = loc.rstrip('\n') + '\n\n' + blk + '\n'
+open(I18N, 'w', encoding='utf-8', newline='\n').write(loc)
+print('i18n-extra.js built:', len(loc), 'chars;', len(ru), 'keys')
