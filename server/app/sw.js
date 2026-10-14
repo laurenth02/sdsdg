@@ -3,7 +3,7 @@
  * - app assets: stale-while-revalidate with versioned request support
  * - API writes: network-only with a consistent offline JSON response
  */
-const VERSION = 'v1.11.0-redesign-v4-finish';
+const VERSION = 'v1.12.0-redesign-v4-stage4';
 const CACHE_PREFIX = 'vc-pwa-';
 const CACHE_SHELL = `${CACHE_PREFIX}shell-${VERSION}`;
 const CACHE_RUNTIME = `${CACHE_PREFIX}runtime-${VERSION}`;
