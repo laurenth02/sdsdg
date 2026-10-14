@@ -15,28 +15,39 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await page.goto(BASE + '#/store', { waitUntil: 'networkidle2', timeout: 60000 });
   await sleep(2500);
   const out = await page.evaluate(async () => {
+    // app.js runs inside a closure: call the endpoints directly, with the CSRF token the app would add.
     const log = [];
-    const put = (k, v) => log.push(k + ': ' + JSON.stringify(v).slice(0, 260));
-    const me0 = await apiRequest('me');
-    put('me', { ok: me0.ok, name: me0.me && me0.me.name, balance: me0.me && me0.me.balance, chats: me0.me && (me0.me.chat_slots || me0.me.chats_left), virtuals: (me0.virtuals || []).length });
-    put('ack_hint', await apiRequest('ack_hint'));
-    put('tos_check', await apiRequest('tos_check'));
-    put('tos_accept', await apiRequest('tos_accept'));
-    state.tosAccepted = true;
-    const packs = (state.storePacks || []).map((p) => ({ id: p.pack_id, chats: p.chats, price: p.price_eur || p.price }));
-    put('packs', packs);
-    const big = packs.slice().sort((a, b) => (b.chats | 0) - (a.chats | 0))[0];
-    if (big) put('buy pack ' + big.id, await authApi('test_checkout', { pack_id: big.id, amount_eur: 0, profile_id: 0, intent_id: 'seed-p-' + Date.now() }));
-    put('topup 30', await authApi('test_checkout', { pack_id: 0, amount_eur: 30, profile_id: 0, intent_id: 'seed-t-' + Date.now() }));
+    const put = (k, v) => log.push(k + ': ' + JSON.stringify(v).slice(0, 300));
+    const tok = await (await fetch('/app/api.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'action=get_csrf_token', credentials: 'same-origin' })).json();
+    const call = async (url, action, extra) => {
+      const fd = new FormData();
+      fd.append('action', action);
+      for (const k in (extra || {})) fd.append(k, extra[k]);
+      if (tok && tok.token) fd.append('_csrf', tok.token);
+      const t = await (await fetch(url, { method: 'POST', body: fd, credentials: 'same-origin' })).text();
+      try { return JSON.parse(t); } catch (e) { return { raw: t.slice(0, 200) }; }
+    };
+    const api = (a, x) => call('/app/api.php', a, x), auth = (a, x) => call('/app/auth.php', a, x);
+    const me0 = await api('me');
+    put('me', { ok: me0.ok, err: me0.err, virtuals: (me0.virtuals || []).length, me: Object.keys(me0.me || me0.user || {}).slice(0, 30) });
+    put('ack_hint', await api('ack_hint'));
+    put('tos_check', await api('tos_check'));
+    put('tos_accept', await api('tos_accept'));
+    const cp = await auth('crypto_packs');
+    put('crypto_packs keys', Object.keys(cp || {}));
+    const list = cp.packs || (cp.catalog && (cp.catalog.packs || cp.catalog.chat_packs)) || [];
+    put('packs', list.map((p) => ({ id: p.pack_id || p.id, chats: p.chats, eur: p.price_eur || p.amount_eur || p.price })));
+    const big = list.slice().sort((a, b) => (b.chats | 0) - (a.chats | 0))[0];
+    if (big) put('buy pack', await auth('test_checkout', { pack_id: big.pack_id || big.id, amount_eur: 0, profile_id: 0, intent_id: 'seed-p-' + Date.now() }));
+    put('topup 30', await auth('test_checkout', { pack_id: 0, amount_eur: 30, profile_id: 0, intent_id: 'seed-t-' + Date.now() }));
     const ids = (me0.virtuals || []).map((v) => v.id);
     put('virtual ids', ids.slice(0, 14));
-    for (const id of ids.slice(0, 4)) put('profile_like ' + id, await apiRequest('profile_like', { virtual: id }));
+    for (const id of ids.slice(0, 4)) put('profile_like ' + id, await api('profile_like', { virtual: id }));
     const texts = ['Привет! Как проходит день?', 'Привет 🙂 Чем занимаешься вечером?', 'Видел твою анкету — любишь путешествовать?', 'Добрый вечер! Какую музыку слушаешь?', 'Привет! Что посоветуешь посмотреть?'];
-    for (let i = 0; i < texts.length && ids[i + 4]; i++) {
-      put('send ' + ids[i + 4], await apiRequest('send', { virtual: ids[i + 4], text: texts[i], self_destruct_sec: 0, request_id: 'seed-' + i + '-' + Date.now() }));
-    }
-    const me1 = await apiRequest('me');
-    put('after', { balance: me1.me && me1.me.balance, keys: Object.keys(me1.me || {}).filter((k) => /chat|slot|pack|balance|like/.test(k)).map((k) => k + '=' + JSON.stringify(me1.me[k]).slice(0, 40)) });
+    for (let i = 0; i < texts.length && ids[i + 4]; i++) put('send ' + ids[i + 4], await api('send', { virtual: ids[i + 4], text: texts[i], self_destruct_sec: 0, request_id: 'seed-' + i + '-' + Date.now() }));
+    const me1 = await api('me');
+    const m = me1.me || me1.user || {};
+    put('after', Object.keys(m).filter((k) => /chat|slot|pack|balance|like/.test(k)).map((k) => k + '=' + JSON.stringify(m[k]).slice(0, 40)));
     return log;
   });
   console.log(out.join('\n'));
