@@ -1,10 +1,21 @@
-/* Legal pages (/terms/, /privacy/, /community-guidelines/): document language ru / uk / en.
-   Loaded in <head> so the language is chosen before the page renders: ?lang= in the address, then the choice made here
-   (vc_legal_lang), then the app language (vc_lang), then the browser. Without JavaScript all three versions are shown. */
+/* Legal pages (/terms/, /privacy/, /community-guidelines/ and the EU documents): document language ru / uk / en and theme.
+   Loaded in <head> so the language and theme are chosen before the page renders: ?lang= in the address, then the choice made here
+   (vc_legal_lang), then the app language (vc_lang), then the browser. Without JavaScript all three versions are shown.
+   Theme: the app choice (vc_theme = light | dark) wins; otherwise the system theme applies through CSS. */
 (function () {
   var LANGS = ['ru', 'uk', 'en'], root = document.documentElement;
   function norm(v) { v = String(v || '').toLowerCase().split(/[-_]/)[0]; if (v === 'ua') v = 'uk'; return LANGS.indexOf(v) >= 0 ? v : ''; }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function paintTheme() {
+    var pref = read('vc_theme');
+    if (pref === 'light' || pref === 'dark') root.setAttribute('data-theme', pref); else root.removeAttribute('data-theme');
+    var dark = pref === 'dark' || (pref !== 'light' && !!(mq && mq.matches));
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', dark ? '#0E0F14' : '#F3F3F6');
+  }
+  paintTheme();
+  if (mq && mq.addEventListener) mq.addEventListener('change', paintTheme);
   function pick() {
     var m = /[?&]lang=([A-Za-z_-]+)/.exec(location.search), v = m && norm(m[1]);
     if (v) return v;
@@ -27,6 +38,33 @@
   root.className += (root.className ? ' ' : '') + 'js';
   root.setAttribute('data-lang', lang);
   root.lang = lang;
+  function visibleDoc() { return document.querySelector('.legal-doc.single') || document.getElementById('doc-' + lang); }
+  /* Contents: the section being read is highlighted, as in the app's settings navigation. */
+  var spy = { links: [], heads: [], toc: null, raf: 0 };
+  function spyInit() {
+    var doc = visibleDoc();
+    spy.links = []; spy.heads = []; spy.toc = doc ? doc.querySelector('.toc') : null;
+    if (!spy.toc) return;
+    var links = spy.toc.querySelectorAll('a[href^="#"]');
+    for (var i = 0; i < links.length; i++) {
+      var el = document.getElementById(decodeURIComponent(links[i].getAttribute('href').slice(1)));
+      if (el) { spy.links.push(links[i]); spy.heads.push(el); }
+    }
+    spyUpdate();
+  }
+  function spyUpdate() {
+    spy.raf = 0;
+    var cur = -1;
+    for (var i = 0; i < spy.heads.length; i++) { if (spy.heads[i].getBoundingClientRect().top < 132) cur = i; else break; }
+    for (var j = 0; j < spy.links.length; j++) {
+      if (j === cur) spy.links[j].setAttribute('aria-current', 'true'); else spy.links[j].removeAttribute('aria-current');
+    }
+    var toc = spy.toc, a = spy.links[cur];
+    if (a && toc && toc.scrollHeight > toc.clientHeight + 4 && getComputedStyle(toc).position === 'sticky') {
+      if (a.offsetTop < toc.scrollTop + 40 || a.offsetTop + a.offsetHeight > toc.scrollTop + toc.clientHeight - 16) toc.scrollTop = a.offsetTop - toc.clientHeight / 3;
+    }
+  }
+  window.addEventListener('scroll', function () { if (!spy.raf && spy.links.length) spy.raf = requestAnimationFrame(spyUpdate); }, { passive: true });
   function apply(l, remember) {
     lang = l;
     root.setAttribute('data-lang', l);
@@ -39,6 +77,7 @@
       try { localStorage.setItem('vc_legal_lang', l); } catch (e) {}
       try { var u = new URL(location.href); u.searchParams.set('lang', l); history.replaceState(null, '', u.pathname + u.search); } catch (e) {}
     }
+    spyInit();
   }
   /* A section link of another language (old #profile-types links, shared URLs) opens the same section of this one. */
   function followHash() {
@@ -52,7 +91,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var sel = document.getElementById('legal-lang');
     if (sel) sel.addEventListener('change', function () { apply(sel.value, true); window.scrollTo(0, 0); });
-    if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) {
+    if (window.matchMedia && window.matchMedia('(max-width: 979px)').matches) {
       var toc = document.querySelectorAll('details.toc');
       for (var i = 0; i < toc.length; i++) toc[i].open = false;
     }
